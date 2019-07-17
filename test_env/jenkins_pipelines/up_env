@@ -72,5 +72,22 @@ pipeline {
                 }
             }
         }
+        stage('Done') {
+            environment {
+                FRONT_SERVICE_ADDR = sh ( 
+                    script: "kubectl get services --namespace test front --output=json | grep -oP \'(?<=\"ip\": \")[^\"]*\'",
+                    returnStdout: true
+                    ).trim()
+            }
+            steps {
+                echo '################################################################################'
+                echo ' '
+                echo "      http://${env.FRONT_SERVICE_ADDR}"
+                echo '      http://35.204.46.43:9000/job/test_jacoco/lastBuild/jacoco/'
+                echo '      Enjoy!'
+                echo ' '
+                echo '################################################################################'
+            }
+        }
     }
 }
