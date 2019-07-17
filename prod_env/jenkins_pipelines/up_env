@@ -4,16 +4,20 @@ pipeline {
     stages {
         stage('kubectl create db') {
             steps {
-                echo 'kubectl create db' 
-                dir("./prod_env/kubernetes/") {
-		            sh 'kubectl config use-context gke_eighth-breaker-245614_europe-west3-a_kube-prod-env'
-                    sh 'kubectl create namespace prod'
-                    sh 'kubectl create -f postgres-configmap.yaml --namespace=prod'
-                    sh 'kubectl create -f postgres-persistence.yaml --namespace=prod'
-                    sh 'kubectl create -f postgres-claim.yaml --namespace=prod'
-                    sh 'kubectl create -f postgres-deployment.yaml --namespace=prod'
-                    sh 'kubectl create -f postgres-service.yaml --namespace=prod'
-                }
+                parallel(
+                    a: {
+                        sh 'kubectl config use-context gke_eighth-breaker-245614_europe-west3-a_kube-prod-env'
+                        sh 'kubectl create namespace prod'
+                        sh 'kubectl create -f postgres-configmap.yaml --namespace=prod'
+                        sh 'kubectl create -f postgres-persistence.yaml --namespace=prod'
+                        sh 'kubectl create -f postgres-claim.yaml --namespace=prod'
+                        sh 'kubectl create -f postgres-deployment.yaml --namespace=prod'
+                        sh 'kubectl create -f postgres-service.yaml --namespace=prod'
+                    },
+                    b: {
+                        build job: 'test_env_export'
+                    }
+                )
             }
         }
         stage('kubectl create back') {
