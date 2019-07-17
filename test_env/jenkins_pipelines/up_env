@@ -69,6 +69,7 @@ pipeline {
                 dir("./test_env/kubernetes/") {
                     sh 'kubectl create -f front-deployment.yaml'
                     sh 'kubectl create -f front-service.yaml'
+                    sh 'kubectl config use-context gke_eighth-breaker-245614_europe-west4_prod-cluster'
                 }
             }
         }
