@@ -1,6 +1,6 @@
 variable "service_account_key_path" {
     description = "service_account_key"
-    default     = "/var/lib/jenkins/logs/eighth-breaker-245614-9439abbfaef0.json"
+    default     = "/home/g990fxagd65supp/jenkins/logs/eighth-breaker-245614-9439abbfaef0.json"
 }
 
 variable "project" {

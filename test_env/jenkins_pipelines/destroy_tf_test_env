@@ -5,7 +5,7 @@ pipeline {
         stage('Terraform destroy test env') {
            steps {
                echo 'Terraform destroy test env' 
-               dir("/var/lib/jenkins/workspace/build_test_env/test_env/terraform") {
+               dir("/home/g990fxagd65supp/jenkins/workspace/build_test_env/test_env/terraform") {
                    sh 'terraform destroy -auto-approve'
                }
            }
