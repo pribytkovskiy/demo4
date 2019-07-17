@@ -35,10 +35,10 @@ pipeline {
                 }
             }
         }
-        stage('Starting export_test_env') {
+        stage('Starting test_env_export') {
             steps {
                 sleep 80
-                build job: 'export_test_env'
+                build job: 'test_env_export'
             }
         }
         stage('build BACK_ADDR') {
