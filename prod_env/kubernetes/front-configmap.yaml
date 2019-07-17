@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: front-config
+  labels:
+    app: front
+data:
+  BACK_IP: BACK_ADDR
+

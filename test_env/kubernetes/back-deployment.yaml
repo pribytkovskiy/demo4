@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back
+spec:
+  selector:
+    matchLabels:
+      app: back
+      tier: backend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: back
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: back
+          image: "eu.gcr.io/eighth-breaker-245614/back:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: DB_IP
+              value: $(POSTGRES_SERVICE_HOST)

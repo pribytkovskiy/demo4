@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Terraform build test env') {
+           steps {
+               echo 'Terraform build test env' 
+               dir("./test_env/terraform") {
+                   sh 'terraform init -input=false'
+                   sh 'terraform apply -input=false -auto-approve'
+                   sh 'gcloud container clusters get-credentials kube-test-env --zone europe-west3-a --project eighth-breaker-245614'
+               }
+           }
+        }
+    }
+}

@@ -1,0 +1,4 @@
+TEMP/
+*.log
+/.vagrant
+/.terraform

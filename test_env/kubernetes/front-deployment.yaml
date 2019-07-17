@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+spec:
+  selector:
+    matchLabels:
+      app: front
+      tier: frontend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: front
+        tier: frontend
+        track: stable
+    spec:
+      containers:
+        - name: front
+          image: "eu.gcr.io/eighth-breaker-245614/front:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: front-config

@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('build back docker container') {
+            steps {
+                echo 'build back docker container' 
+                dir("./prod_env/docker/back/") {
+		            sh 'kubectl config use-context gke_eighth-breaker-245614_europe-west3-a_kube-prod-env'
+                }
+            }
+        }
+        stage('kubectl apply back') {
+            steps {
+                echo 'kubectl apply back' 
+                dir("./prod_env/kubernetes/") {
+                    sh 'kubectl set image deployment/back back=eu.gcr.io/eighth-breaker-245614/back:latest --namespace=prod'
+                }
+            }
+        }
+        stage('Starting export_prod_env') {
+            steps {
+                build job: 'export_prod_env'
+            }
+        }
+        stage('build front docker container') {
+            steps {
+                echo 'build front docker container' 
+                dir("./prod_env/docker/front/") {
+                    sh 'docker build --no-cache -f ./front -t eu.gcr.io/eighth-breaker-245614/front .'
+                    sh 'docker push eu.gcr.io/eighth-breaker-245614/front:latest'
+                }
+            }
+        }
+        stage('kubectl apply front') {
+            steps {
+                echo 'kubectl apply front'
+                dir("./prod_env/kubernetes/") {
+                    sh 'kubectl set image deployment/front front=eu.gcr.io/eighth-breaker-245614/front:latest --namespace=prod'
+                }
+            }
+        }
+    }
+}

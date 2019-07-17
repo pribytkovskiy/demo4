@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('kubectl create db') {
+            steps {
+                echo 'kubectl create db' 
+                dir("./prod_env/kubernetes/") {
+		            sh 'kubectl config use-context gke_eighth-breaker-245614_europe-west3-a_kube-prod-env'
+                    sh 'kubectl create namespace prod'
+                    sh 'kubectl create -f postgres-configmap.yaml --namespace=prod'
+                    sh 'kubectl create -f postgres-persistence.yaml --namespace=prod'
+                    sh 'kubectl create -f postgres-claim.yaml --namespace=prod'
+                    sh 'kubectl create -f postgres-deployment.yaml --namespace=prod'
+                    sh 'kubectl create -f postgres-service.yaml --namespace=prod'
+                }
+            }
+        }
+        stage('kubectl create back') {
+            steps {
+                echo 'kubectl create back' 
+                dir("./prod_env/kubernetes/") {
+                    sh 'kubectl create -f back-deployment.yaml --namespace=prod'
+                    sh 'kubectl create -f back-service.yaml --namespace=prod'
+                }
+            }
+        }
+        stage('Starting export_prod_env') {
+            steps {
+                sleep 80
+                build job: 'export_prod_env'
+            }
+        }
+        stage('build BACK_ADDR') {
+            steps {
+                echo 'build BACK_ADDR'
+                dir("./prod_env/kubernetes/") {
+                    sh 'kubectl create -f front-configmap.yaml'
+                }
+            }
+        }
+        stage('build front docker container') {
+            steps {
+                echo 'build front docker container' 
+                dir("./prod_env/docker/front/") {
+                    sh 'docker build --no-cache -f ./front -t eu.gcr.io/eighth-breaker-245614/front .'
+                    sh 'docker push eu.gcr.io/eighth-breaker-245614/front:latest'
+                }
+            }
+        }
+        stage('kubectl create front') {
+            steps {
+                echo 'kubectl create front' 
+                dir("./prod_env/kubernetes/") {
+                    sh 'kubectl create -f front-deployment.yaml --namespace=prod'
+                    sh 'kubectl create -f front-service.yaml --namespace=prod'
+                }
+            }
+        }
+    }
+}

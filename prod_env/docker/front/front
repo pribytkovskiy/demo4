@@ -1,0 +1,27 @@
+FROM node:12.2.0
+
+RUN apt-get update
+
+RUN apt-get install -y git
+
+RUN git clone https://github.com/pribytkovskiy/MaYBE.git
+
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/ComponentProductService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/ComponentsService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/DeskService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/InvoiceItemService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/InvoiceService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/OrderItemService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/OrderService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/ProductService.js 
+RUN sed -i "s|BACK_IP|BACK_ADDR|" /MaYBE/frontend/src/service/StatisticsService.js 
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+WORKDIR /MaYBE/frontend/
+
+RUN npm install && npm install react-scripts@3.0.1 -g && rm -rf node_module
+
+EXPOSE 3000
+
+ENTRYPOINT [ "npm", "start" ]

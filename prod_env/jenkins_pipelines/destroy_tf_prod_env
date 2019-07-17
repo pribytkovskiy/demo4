@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Terraform destroy prod env') {
+           steps {
+               echo 'Terraform destroy prod env' 
+               dir("/var/lib/jenkins/workspace/prod_build/prod_env/terraform") {
+                   sh 'terraform destroy -auto-approve'
+               }
+           }
+        }
+    }
+}
