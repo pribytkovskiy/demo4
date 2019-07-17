@@ -7,7 +7,7 @@ pipeline {
                 parallel(
                     a: {
                         sh 'kubectl config use-context gke_eighth-breaker-245614_europe-west3-a_kube-test-env'
-                        sh 'kubectl create namespace test'
+
                         sh 'kubectl create -f /home/g990fxagd65supp/jenkins/workspace/test_deploy/test_env/kubernetes/postgres-configmap.yaml --namespace=test'
                         sh 'kubectl create -f /home/g990fxagd65supp/jenkins/workspace/test_deploy/test_env/kubernetes/postgres-persistence.yaml --namespace=test'
                         sh 'kubectl create -f /home/g990fxagd65supp/jenkins/workspace/test_deploy/test_env/kubernetes/postgres-claim.yaml --namespace=test'
