@@ -49,7 +49,7 @@ pipeline {
             steps {
                 echo 'build BACK_ADDR'
                 dir("./test_env/kubernetes/") {
-                    sh 'kubectl create -f front-configmap.yaml'
+                    sh 'kubectl create -f front-configmap.yaml --namespace=test'
                 }
             }
         }
